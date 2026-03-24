@@ -4,8 +4,8 @@
 
 ## 主程式
 index.html  
-main.css
-script.js
+main.css  
+main.js  
 
 ## 網址
 <https://shenalvin.github.io/webside/>
