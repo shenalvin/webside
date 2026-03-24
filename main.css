@@ -9,10 +9,17 @@ body {
 }
 
 .container { 
-    width: 900px; 
-    display: grid; 
-    grid-template-columns: 1.5fr 1fr; 
+    width: 95%; 
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex; 
+    flex-warp:warp;
+    /*grid-template-columns: 1.5fr 1fr; */
     gap: 20px; 
+}
+.card{
+    flex:1 1 300px;
+    margin: 10px;
 }
 
 /* 左側面板 - 深色主題 */
