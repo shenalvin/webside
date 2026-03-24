@@ -1,23 +1,23 @@
-name: Deploy Web with Secrets
+name: Deploy Website
 on:
   push:
-    branches: ["main"] # 當你 push 到 main 分支時觸發
+    branches: ["main"]
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create Config File
+      - name: Create Data Folder and Config File
         run: |
-          # 自動生成一個 json 檔案，把 Secrets 塞進去
-          echo '{
-            "api_key": "${{ secrets.API_KEY }}",
-            "mqtt_pass": "${{ secrets.MQTT_KEY }}"
-          }' > data/config.json
+          mkdir -p data
+          # 這裡會從你設定的 Secret 抓取 API_KEY，產出一個 json 檔
+          echo '{"API_KEY": "${{ secrets.API_KEY }}"}' > data/config.json
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-      # ... 後續部署到 Pages 的步驟
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./ # 你的網頁根目錄
