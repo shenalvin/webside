@@ -81,10 +81,136 @@ body {
     position: relative; 
 }
 
-/* ... 以下維持你原本的設定 (gauge-box::before, status-ball 等) ... */
+.time-header { 
+    grid-column: span 2; 
+    text-align: left; 
+    font-size: 20px; 
+    color: #38bdf8; 
+    font-weight: bold; 
+    margin-bottom: 10px; 
+}
+
+.gauge-box::before { 
+    content: ""; 
+    position: absolute; 
+    inset: 12px; 
+    background: #1e293b; 
+    border-radius: 50%; 
+}
+
+
+
+.gauge-val { 
+    position: relative; 
+    z-index: 1; 
+    font-size: 32px; 
+    font-weight: bold; 
+}
+
+
+
+/* 區域數據樣式 */
+.region-box { 
+    grid-column: span 2; 
+    background: #334155; 
+    border-radius: 10px; 
+    padding: 15px; 
+    margin-top: 10px; 
+}
+
+
+
+.region-title { 
+    color: #cbd5e1; 
+    margin-bottom: 10px; 
+}
+
+
+
+.region-data { 
+    display: flex; 
+    justify-content: space-around; 
+}
+
+
+
+.region-val { 
+    font-size: 22px; 
+    font-weight: bold; 
+    color: #fbbf24; 
+}
+
+/* 控制狀態球 */
+.status-container { 
+    grid-column: span 2; 
+    display: flex; 
+    justify-content: space-around; 
+}
+
+
+
+.status-ball { 
+    width: 90px; 
+    height: 90px; 
+    border-radius: 50%; 
+    background: #475569; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: 0.4s; 
+    margin-bottom: 10px;
+}
+
+.active { 
+    background: #3b82f6 !important; 
+    box-shadow: 0 0 15px #3b82f6; 
+}
+
+
+
+/* 右側設定面板 - 淺色主題 */
+.setting-panel { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 20px; 
+}
+
+
+
+.control-box { 
+    border: 2.5px solid #3b82f6; 
+    border-radius: 15px; 
+    padding: 20px;
+    background: white; 
+}
+
+
+
+.input-group { 
+    margin: 15px 0; 
+}
+
+
+
+input { 
+    border: 1px solid #ccc; 
+    font-size: 18px; 
+    font-weight: bold; 
+    color: #3b82f6; 
+    padding: 5px; 
+    border-radius: 5px; 
+}
 
 /* 確保按鈕在手機上好點擊 */
 .save-btn { 
+    background: #3b82f6; 
+    color: white; 
+    border: none; 
+    padding: 15px; 
+    border-radius: 8px;
+    cursor: pointer; 
+    font-weight: bold;
+    
     min-height: 50px; 
     font-size: 20px; 
 }
