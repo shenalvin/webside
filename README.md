@@ -8,4 +8,4 @@ main.css
 main.js  
 
 ## 網址
-<[https://shenalvin.github.io/webside/](https://shenalvin.github.io/What_the_farm/)>
+<https://shenalvin.github.io/What_the_farm/>
