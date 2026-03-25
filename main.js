@@ -99,3 +99,4 @@ function muteAlertToday(alertId, modalId) {
     localStorage.setItem(`mute_${alertId}`, today);
     closeSpecificAlert(modalId);
 }
+
