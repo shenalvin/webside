@@ -24,7 +24,7 @@
         </div>
 
         <ul class="nav-menu" id="nav-menu">
-            <li><a href="index.html" class="active">首頁概況</a></li>
+            <li><a href="index.html" >首頁概況</a></li>
             <li><a href="charts.html">氣象圖表</a></li>
             <li><a href="login.html">管理者登入</a></li>
         </ul>
@@ -40,25 +40,19 @@
             <span>🔥 高溫警報：今日北部地區預估突破 38°C，請注意補水與撒水。</span>
         </section>
 
-        <section>
-            <h2 style="margin-bottom: 15px;">即時氣象預測 (分區)</h2>
-            <div class="card-grid">
-                <div class="info-card">
-                    <h3 style="text-align:center; margin-bottom:10px;">北部</h3>
-                    <div class="weather-info" style="display:flex; justify-content:space-around; text-align:center;">
-                        <div><p>溫度</p><strong>28°C</strong></div>
-                        <div><p>降雨機率</p><strong>20%</strong></div>
-                    </div>
-                </div>
-                <div class="info-card">
-                    <h3 style="text-align:center; margin-bottom:10px;">中部</h3>
-                    <div class="weather-info" style="display:flex; justify-content:space-around; text-align:center;">
-                        <div><p>溫度</p><strong>30°C</strong></div>
-                        <div><p>降雨機率</p><strong>10%</strong></div>
-                    </div>
-                </div>
-                </div>
-        </section>
+        <h2>農作物灌溉管理面板</h2>
+        <div class="card-grid" style="margin-top: 20px;">
+            <div class="info-card status-card status-danger">
+                <h3>土壤溫度</h3>
+                <p class="value">35°C</p>
+                <p class="desc">狀態：偏高</p>
+            </div>
+            <div class="info-card status-card status-success">
+                <h3>環境濕度</h3>
+                <p class="value">60%</p>
+                <p class="desc">狀態：正常</p>
+            </div>
+        </div>
     </main>
 
     <script src="main.js"></script>
