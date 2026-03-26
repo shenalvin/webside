@@ -32,8 +32,16 @@ async function checkLogin(inputUser, inputPass) {
     
     if (user) {
         console.log("歡迎回來，" + user.displayName);
-        // 執行登入成功邏輯
+        // 執行登入成功邏輯 
     } else {
         alert("帳號或密碼錯誤");
     }
+}
+
+function saveRegionSettings() {
+    const selectedRegion = document.getElementById('region-selector').value;
+    // 統一儲存名稱為 user_region
+    localStorage.setItem('user_region', selectedRegion);
+    alert(`地區已成功設定為：${selectedRegion}`);
+    location.reload(); 
 }

@@ -1,6 +1,6 @@
-// 預設帳密 (正式專案請在後端驗證)
-const VALID_USER = "admin";
-const VALID_PASS = "123456";
+// 測試帳密
+// const VALID_USER = "admin";
+// const VALID_PASS = "123456";
 
 // 取得 UI 元件
 const loginForm = document.getElementById('login-form');
@@ -61,31 +61,36 @@ function clearForm() {
 
 // --- 核心登入邏輯 ---
 
-loginForm.addEventListener('submit', function() {
-    // a. 檢查是否鎖定中
-    const lockTime = localStorage.getItem('loginLockUntil');
-    if (lockTime && new Date().getTime() < lockTime) {
-        const remaining = Math.ceil((lockTime - new Date().getTime()) / 60000);
-        showError(`嘗試次數過多，帳號已鎖定。請在 ${remaining} 分鐘後再試。`);
+loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // 1. 先讀取你的 JSON 設定檔 (假設路徑正確)
+    let admins = [data/config.json];
+    try {
+        const response = await fetch('data/config.json'); // 確保路徑與你的 JSON 檔案一致
+        const config = await response.json();
+        admins = config.admins;
+    } catch (err) {
+        console.error("無法讀取帳號設定檔", err);
+        showError("系統錯誤：無法載入認證資料");
         return;
     }
 
-    // b. 驗證驗證碼
+    // 2. 驗證驗證碼 (保留你原本的邏輯)
     if (captchaInput.value.toUpperCase() !== currentCaptcha) {
         showError("驗證碼錯誤！");
-        generateCaptcha(); // 強制刷新
+        generateCaptcha();
         return;
     }
 
-    // c. 驗證帳密
-    if (usernameInput.value === VALID_USER && passwordInput.value === VALID_PASS) {
-        // 登入成功
-        sessionStorage.setItem('isAdmin', 'true'); // 設置 Session
-        localStorage.removeItem('loginFailCount'); // 重設失敗次數
-        localStorage.removeItem('loginLockUntil');
-        window.location.href = 'admin.html'; // 跳轉
+    // 3. 比對帳密與獲取顯示名稱
+    const user = admins.find(u => u.username === usernameInput.value && u.password === passwordInput.value);
+
+    if (user) {
+        sessionStorage.setItem('isAdmin', 'true');
+        sessionStorage.setItem('adminName', user.displayName); // 儲存名稱供管理介面使用
+        window.location.href = 'admin.html';
     } else {
-        // 登入失敗
         handleLoginFail();
     }
 });
