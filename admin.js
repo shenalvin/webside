@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('admin-welcome').innerText = `歡迎回來，${user}`;
             
     // 讀取之前存好的地區
-    document.getElementById('pref-region').value = localStorage.getItem('userRegion') || 'Taipei';
+    //document.getElementById('pref-region').value = localStorage.getItem('userRegion') || 'Taipei';
 });
 
 function savePref() {
