@@ -49,7 +49,9 @@ if (menuToggle && navMenu) {
     });
 }
 
-const CWA_API_KEY = "data/config.js";
+const CWA_API_KEY = await fetch('data/config.json');
+const config = await response.json();
+API_KEY = config.cwa_api_key;
 const alert_key = 'W-C0033-001';
 const earthquake_key = 'E-A0015-001';
 

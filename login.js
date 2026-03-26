@@ -40,53 +40,9 @@ function generateCaptcha() {
         code += chars.charAt(Math.floor(Math.random() * chars.length));
     }
     currentCaptcha = code;
-    document.getElementById('captcha-code').innerText = code;
-    captchaCreatedAt = new Date(); // 紀錄產生時間
-    msgDisplay.innerText = ""; // 清除提示
+    captchaCodeDisplay.innerText = code;
+    captchaInput.value = ""; // 清空輸入框
 }
-
-function isCaptchaExpired() {
-    if (!captchaCreatedAt) return true;
-    const now = new Date();
-    const diff = (now - captchaCreatedAt) / 1000 / 60; // 分鐘
-    return diff >= 30;
-}
-
-loginForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    // 1. 檢查驗證碼時效
-    if (isCaptchaExpired()) {
-        showError("⚠️ 驗證碼已超過 30 分鐘，請點擊刷新按鈕更換後再登入。");
-        return;
-    }
-
-    // 2. 驗證碼內容檢查
-    if (captchaInput.value.toUpperCase() !== currentCaptcha) {
-        showError("驗證碼錯誤！");
-        generateCaptcha();
-        return;
-    }
-
-    // 3. 從 sessionStorage 讀取 main.js 抓好的帳密資料
-    const configData = JSON.parse(sessionStorage.getItem('globalConfig'));
-    if (!configData || !configData.admins) {
-        showError("系統資料載入中，請稍後再試。");
-        return;
-    }
-
-    const user = configData.admins.find(u => 
-        u.username === usernameInput.value && u.password === passwordInput.value
-    );
-
-    if (user) {
-        sessionStorage.setItem('isAdmin', 'true');
-        sessionStorage.setItem('adminName', user.displayName);
-        window.location.href = 'admin.html';
-    } else {
-        handleLoginFail();
-    }
-});
 
 // 3. 跳開頁面時清除表單 (使用 pageshow 事件)
 window.addEventListener('pageshow', (event) => {
@@ -103,55 +59,7 @@ function clearForm() {
 }
 
 
-// --- 核心登入邏輯 ---
 
-loginForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    // 1. 先讀取你的 JSON 設定檔 (假設路徑正確)
-    let admins = [];
-    try {
-        const response = await fetch('data/config.json'); // 確保路徑與你的 JSON 檔案一致
-        const config = await response.json();
-        admins = config.admins;
-    } catch (err) {
-        console.error("無法讀取帳號設定檔", err);
-        showError("系統錯誤：無法載入認證資料");
-        return;
-    }
-
-    // 2. 驗證驗證碼 (保留你原本的邏輯)
-    if (captchaInput.value.toUpperCase() !== currentCaptcha) {
-        showError("驗證碼錯誤！");
-        generateCaptcha();
-        return;
-    }
-
-    // 3. 比對帳密與獲取顯示名稱
-    const user = admins.find(u => u.username === usernameInput.value && u.password === passwordInput.value);
-
-    if (user) {
-        sessionStorage.setItem('isAdmin', 'true');
-        sessionStorage.setItem('adminName', user.displayName); // 儲存名稱供管理介面使用
-        window.location.href = 'admin.html';
-    } else {
-        handleLoginFail();
-    }
-});
-
-async function checkLogin(inputUser, inputPass) {
-    const response = await fetch('data/config.json');
-    const config = await response.json();
-    
-    const user = config.admins.find(u => u.username === inputUser && u.password === inputPass);
-    
-    if (user) {
-        console.log("歡迎回來，" + user.displayName);
-        // 執行登入成功邏輯 
-    } else {
-        alert("帳號或密碼錯誤");
-    }
-}
 
 function handleLoginFail() {
     failCount++;
