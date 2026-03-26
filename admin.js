@@ -24,20 +24,6 @@ function saveSecret() {
     alert('金鑰已加密暫存');
 }
 
-async function checkLogin(inputUser, inputPass) {
-    const response = await fetch('data/config.json');
-    const config = await response.json();
-    
-    const user = config.admins.find(u => u.username === inputUser && u.password === inputPass);
-    
-    if (user) {
-        console.log("歡迎回來，" + user.displayName);
-        // 執行登入成功邏輯 
-    } else {
-        alert("帳號或密碼錯誤");
-    }
-}
-
 function saveRegionSettings() {
     const selectedRegion = document.getElementById('region-selector').value;
     // 統一儲存名稱為 user_region
