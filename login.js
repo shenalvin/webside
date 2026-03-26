@@ -65,7 +65,7 @@ loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
     // 1. 先讀取你的 JSON 設定檔 (假設路徑正確)
-    let admins = [data/config.json];
+    let admins = [];
     try {
         const response = await fetch('data/config.json'); // 確保路徑與你的 JSON 檔案一致
         const config = await response.json();
@@ -94,6 +94,20 @@ loginForm.addEventListener('submit', async function(e) {
         handleLoginFail();
     }
 });
+
+async function checkLogin(inputUser, inputPass) {
+    const response = await fetch('data/config.json');
+    const config = await response.json();
+    
+    const user = config.admins.find(u => u.username === inputUser && u.password === inputPass);
+    
+    if (user) {
+        console.log("歡迎回來，" + user.displayName);
+        // 執行登入成功邏輯 
+    } else {
+        alert("帳號或密碼錯誤");
+    }
+}
 
 function handleLoginFail() {
     failCount++;
