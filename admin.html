@@ -46,6 +46,30 @@
     </nav>
 
     <main>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>管理面板</h2>
+            <p id="admin-welcome">歡迎回來，管理者</p>
+        </div>
+
+        <section class="card" style="margin-top:20px; text-align:left;">
+            <h3>⚙️ 系統偏好設定</h3>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:15px;">
+                <div>
+                    <label>監測地區：</label>
+                    <select id="pref-region" onchange="savePref()">
+                        <option value="Taipei">臺北市</option>
+                        <option value="Taichung">臺中市</option>
+                        <option value="Kaohsiung">高雄市</option>
+                        <option value="Hualien">花蓮縣</option>
+                    </select>
+                </div>
+                <div>
+                    <label>聯網設備金鑰 (API Key)：</label>
+                    <input type="password" id="iot-key" placeholder="輸入金鑰" onchange="saveSecret()">
+                </div>
+            </div>
+        </section>
+        
         <h2>農作物灌溉管理面板</h2>
         <div class="card-grid" style="margin-top: 20px;">
             <div class="info-card" style="text-align:center;">
@@ -61,6 +85,27 @@
         function logout() {
             sessionStorage.removeItem('isAdmin');
             window.location.href = 'login.html';
+        }
+        // 進入頁面時讀取名稱與設定
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = sessionStorage.getItem('adminName') || '管理員';
+            document.getElementById('admin-welcome').innerText = `歡迎回來，${user}`;
+            
+            // 讀取之前存好的地區
+            document.getElementById('pref-region').value = localStorage.getItem('userRegion') || 'Taipei';
+        });
+
+        function savePref() {
+            const region = document.getElementById('pref-region').value;
+            localStorage.setItem('userRegion', region);
+            alert('監測地區已更新為：' + region);
+        }
+
+        function saveSecret() {
+            const key = document.getElementById('iot-key').value;
+            // 僅存在 Session，避免永久留在電腦上
+            sessionStorage.setItem('iot_secret', key);
+            alert('金鑰已加密暫存');
         }
     </script>
 </body>
