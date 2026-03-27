@@ -58,13 +58,15 @@ function clearForm() {
     msgDisplay.innerText = ""; // 清除錯誤訊息
 }
 
-async function loadConfig() {
+async function GetConfig() {
     try {
         const response = await fetch('data/config.json');
-        globalConfig = await response.json();
-        // 將設定存入 session，讓其他 JS (如 login.js) 也能用到
-        sessionStorage.setItem('globalConfig', JSON.stringify(globalConfig));
-        console.log("Config 載入成功");
+        const data = await response.json(); // 取得 JSON 內容
+        
+        // 關鍵：將內容存入 sessionStorage，後面的邏輯才拿得到
+        sessionStorage.setItem('globalConfig', JSON.stringify(data));
+        
+        console.log("Config 載入並儲存成功");
     } catch (error) {
         console.error("無法讀取 config.json:", error);
     }
@@ -74,11 +76,18 @@ async function loadConfig() {
 loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    // --- 修正處 1：從 sessionStorage 獲取正確的設定資料 ---
-    const configData = sessionStorage.getItem('globalConfig');
+    // 檢查 sessionStorage
+    let configData = sessionStorage.getItem('globalConfig');
+    
+    // 如果裡面沒資料，現場補抓
     if (!configData) {
-        showError("系統設定載入中，請稍後再試...");
-        await loadConfig(); // 嘗試重新載入
+        await GetConfig(); 
+        configData = sessionStorage.getItem('globalConfig'); // 重新抓完後再讀取一次
+    }
+    
+    // 最終檢查，如果還是沒資料（例如連線失敗），就中斷執行
+    if (!configData) {
+        showError("系統設定載入失敗，請檢查網路。");
         return;
     }
     
