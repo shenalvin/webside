@@ -93,16 +93,13 @@ function muteAlertToday(alertId, modalId) {
 }
 
 // 修正：確保變數範圍正確，並加入地區過濾
+// 修改原本的 fetchCWAAlerts
 async function fetchCWAAlerts() {
     try {
         const targetRegion = localStorage.getItem('user_region') || '臺北市';
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${Hight_temp_key}?Authorization=${CWA_API_KEY}`;
-        const resp = await fetch(url);
-        const data = await resp.json();
-        const records = data.records.record; 
-
-        // 過濾出與設定地區相關的警報
-        const filtered = records.filter(h => h.datasetDescription.includes(targetRegion));
+        // 請求自己的伺服器，不再直接對外
+        const resp = await fetch(`/api/weather/alert?region=${targetRegion}`);
+        const filtered = await resp.json();
 
         filtered.forEach(h => {
             const today = new Date().toDateString();
@@ -116,7 +113,7 @@ async function fetchCWAAlerts() {
                 });
             }
         });
-    } catch (e) { console.error("警報抓取失敗", e); }
+    } catch (e) { console.error("警報連線失敗", e); }
 }
 
 async function fetchEarthquake() {

@@ -21,6 +21,29 @@ const LOCK_TIME_MINS = 5;
 // --- 初始化 ---
 generateCaptcha();
 
+// login.js 中的 submit 監聽器
+loginForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            username: usernameInput.value,
+            password: passwordInput.value
+        })
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        sessionStorage.setItem('isAdmin', 'true');
+        sessionStorage.setItem('adminName', result.displayName);
+        window.location.href = 'admin.html';
+    } else {
+        alert(result.message);
+    }
+});
+
 // --- 介面交互邏輯 ---
 
 // 1. 密碼可見性切換
