@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理面板 - What the Farm</title>
+    <link rel="stylesheet" href="main.css">
+    <script>
+        // 簡單的安全檢查 (防止未登入直接進入)
+        if (sessionStorage.getItem('isAdmin') !== 'true') {
+            alert('未經授權，請先登入！');
+            window.location.href = 'login.html';
+        }
+    </script>
+    <style>
+        /* 管理頁專用樣式 */
+        .status-card { color: white; border: none; }
+        .status-card h3 { opacity: 0.8; font-size: 1rem; margin-bottom: 10px; }
+        .status-card .value { font-size: 2.5rem; font-weight: bold; }
+        .status-card .desc { font-size: 0.9rem; opacity: 0.9; }
+
+        
+        .btn-water {
+            background: white; color: var(--text-main); border: none;
+            padding: 10px 20px; border-radius: 20px; font-weight: bold;
+            cursor: pointer; transition: var(--transition); margin-top: 15px;
+        }
+        .btn-water:hover { background: #ecf0f1; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">What the Farm</div>
+        <div class="nav-time" id="current-time">載入中...</div>
+        
+        <div class="menu-toggle" id="mobile-menu-icon">
+            <span></span><span></span><span></span>
+        </div>
+
+        <ul class="nav-menu" id="nav-menu">
+            <li><a href="index.html" >首頁概況</a></li>
+            <li><a href="charts.html">氣象圖表</a></li>
+            <li><a href="login.html">管理者登入</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h2>管理面板</h2>
+            <p id="admin-welcome">歡迎回來，管理者</p>
+        </div>
+
+        <section class="card" style="margin-top:20px; text-align:left;">
+            <h3>📍 氣象監控地區設定</h3>
+            <div style="margin-top: 15px;">
+                <label>選擇顯示地區：</label>
+                <select id="region-selector" style="padding: 8px 15px; border-radius: 5px; border: 1px solid #ddd;">
+                    <option value="臺北市">臺北市</option>
+                    <option value="新北市">新北市</option>
+                    <option value="基隆市">基隆市</option>
+                    <option value="桃園市">桃園市</option>
+                    <option value="新竹市">新竹市</option>
+                    <option value="新竹縣">新竹縣</option>
+                    <option value="苗栗縣">苗栗縣</option>
+                    <option value="臺中市">臺中市</option>
+                    <option value="彰化縣">彰化縣</option>
+                    <option value="南投縣">南投縣</option>
+                    <option value="雲林縣">雲林縣</option>
+                    <option value="嘉義縣">嘉義縣</option>
+                    <option value="嘉義市">嘉義市</option>
+                    <option value="臺南市">臺南市</option>
+                    <option value="高雄市">高雄市</option>
+                    <option value="宜蘭縣">宜蘭縣</option>
+                    <option value="花蓮縣">花蓮縣</option>
+                    <option value="臺東縣">臺東縣</option>
+                    <option value="澎湖縣">澎湖縣</option>
+                    <option value="金門縣">金門縣</option>
+                    <option value="連江縣">連江縣</option>
+                    </select>
+                <button onclick="saveRegionSettings()" style="background:#1a252f; color:white; border:none; padding:8px 20px; border-radius:20px; margin-left:10px; cursor:pointer;">儲存設定</button>
+            </div>
+        </section>
+        
+        <h2>農作物灌溉管理面板</h2>
+        <div class="card-grid" style="margin-top: 20px;">
+            <div class="info-card" style="text-align:center;">
+                <h3>灌溉控制</h3>
+                <p style="margin: 10px 0; color:#7f8c8d;">灑水系統狀態：待命</p>
+                <button class="btn-water" style="background:var(--primary-color); color:white;">啟動灑水系統</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="main.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
