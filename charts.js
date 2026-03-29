@@ -46,7 +46,7 @@ createWeatherChart('rain-east', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#34
 async function fetchWeeklyWeather() {
     try {
         // 這裡以臺北市 (LocationsName) 為範例，你可以根據需求改為北中南東分區
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=${CWA_API_KEY}`;
+        const url = ("https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-091?Authorization=CWA-5246C051-E367-4276-A316-6B73776DA2FD");
         const resp = await fetch(url);
         const data = await resp.json();
         
