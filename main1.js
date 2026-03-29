@@ -57,7 +57,8 @@ createWeatherChart('rain-south', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3
 createWeatherChart('temp-east', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line', false); // 無填充
 createWeatherChart('rain-east', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3498db', 'bar');
 
-//登入設定
+// 取得 UI 元件
+// login.html
 const loginForm = document.getElementById('login-form');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
@@ -148,7 +149,6 @@ loginForm.addEventListener('submit', async function(e) {
     }
     
     const config = JSON.parse(configData);
-    // 帳號擷取
     let admins = config.admins || []; 
 
     // 2. 驗證驗證碼
@@ -170,7 +170,7 @@ loginForm.addEventListener('submit', async function(e) {
     }
 });
 
-// 登入錯誤
+
 function handleLoginFail() {
     failCount++;
     clearForm(); // 清除之前打的
@@ -180,11 +180,17 @@ function handleLoginFail() {
         const lockUntil = new Date().getTime() + LOCK_TIME_MINS * 60000;
         localStorage.setItem('loginLockUntil', lockUntil);
         failCount = 0; // 重置次數，等待下次解鎖
-        showError(`密碼輸錯超過 ${MAX_FAILS} 次，帳號已暫停登入 ${LOCK_TIME_MINS} 分鐘。`);
+        showError(`密碼輸錯超過 ${MAX_FAILS} 次，帳號已暫停登入 5 分鐘。`);
     } else {
         showError(`帳號或密碼錯誤！(剩餘嘗試次數: ${MAX_FAILS - failCount})`);
     }
 }
+
+function showError(msg) {
+    msgDisplay.innerText = msg;
+    msgDisplay.classList.add('error');
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // 安全檢查：若未登入則導回

@@ -13,24 +13,25 @@ const togglePassword = document.getElementById('togglePassword');
 const submitBtn = document.getElementById('btn-submit');
 const msgDisplay = document.getElementById('login-msg');
 
+// 驗證碼定義
 let currentCaptcha = "";
+// 登入次數計算
 let failCount = 0;
 const MAX_FAILS = 5;
+// 暫停登入時間計算 5min
 const LOCK_TIME_MINS = 5;
 
 // --- 初始化 ---
 generateCaptcha();
 
-// --- 介面交互邏輯 ---
-
-// 1. 密碼可見性切換
+// 密碼可見性切換
 togglePassword.addEventListener('click', function() {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
     passwordInput.setAttribute('type', type);
     this.innerText = type === 'password' ? '👁️' : '🙈';
 });
 
-// 2. 驗證碼刷新
+// 驗證碼刷新
 btnRefreshCaptcha.addEventListener('click', generateCaptcha);
 
 function generateCaptcha() {
@@ -44,7 +45,7 @@ function generateCaptcha() {
     captchaInput.value = ""; // 清空輸入框
 }
 
-// 3. 跳開頁面時清除表單 (使用 pageshow 事件)
+// 跳開頁面時清除表單 (使用 pageshow 事件)
 window.addEventListener('pageshow', (event) => {
     // 如果是從快取載入（例如按了「上一頁」），清除表單
     if (event.persisted) {
