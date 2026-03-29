@@ -64,4 +64,4 @@ createWeatherChart('rain-east', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#34
 function toggleLed() {
     var led = document.getElementById('myLed');
     led.classList.toggle('on');
-  }
+}
