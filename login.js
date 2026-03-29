@@ -3,6 +3,7 @@
 // const VALID_PASS = "123456";
 
 // 取得 UI 元件
+// login.html
 const loginForm = document.getElementById('login-form');
 const usernameInput = document.getElementById('username');
 const passwordInput = document.getElementById('password');
