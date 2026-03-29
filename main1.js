@@ -76,6 +76,9 @@ const MAX_FAILS = 5;
 // 暫停登入時間計算 5min
 const LOCK_TIME_MINS = 5;
 
+// --- 初始化 ---
+generateCaptcha();
+
 // 密碼可見性切換
 togglePassword.addEventListener('click', function() {
     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
