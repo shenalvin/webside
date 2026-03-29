@@ -206,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const user = sessionStorage.getItem('adminName') || '管理員';
+    const user = sessionStorage.getItem('adminName');
     const welcomeMsg = document.getElementById('admin-welcome');
     if (welcomeMsg) welcomeMsg.innerText = `歡迎回來，${user}`;
             
