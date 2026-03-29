@@ -142,3 +142,9 @@ async function fetchEarthquake() {
     } catch (e) { console.error("地震資料抓取失敗", e); }
 }
 
+`
+<script src="main.js"></script>
+<script src="login.js"></script>
+<script src="charts.js"></script>
+<script src="admin.js"></script>
+`
