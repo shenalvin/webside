@@ -27,10 +27,33 @@
     <main>
 
         <div class="card-grid">
+            <!--需要跟據設地地區修改氣象資料-->
             <h2 style="margin-bottom: 15px;">即時氣象資訊 (臺北市)</h2>
             <h4 style="margin-bottom: 15px;">資料來源：中央氣象局</h4>
             <span></span>
-
+            <div class="weather-grid-2x2" style="margin-top: 20px;">
+                <div class="info-card status-card status-danger">
+                    <!--需要額外設計溫度顯示最高及最低溫-->
+                    <h3>溫度</h3>
+                    <p class="value">35°C</p>
+                    <p class="desc">狀態：偏高</p>
+                </div>
+                <div class="info-card status-card status-success">
+                    <h3>體感溫度</h3>
+                    <p class="value">60%</p>
+                    <p class="desc">狀態：舒適</p>
+                </div>
+                <div class="info-card status-card status-success">
+                    <h3>濕度</h3>
+                    <p class="value">60%</p>
+                    <p class="desc">狀態：正常</p>
+                </div>
+                <div class="info-card status-card status-danger">
+                    <h3>降雨機率</h3>
+                    <p class="value">40%</p>
+                </div>
+                
+            </div>
         </div>
 
         <section>
