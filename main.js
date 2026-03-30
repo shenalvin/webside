@@ -1,150 +1,181 @@
-// --- 即時時間更新 ---
+// --- 1. 即時時間更新 ---
 function updateClock() {
     const timeDisplay = document.getElementById('current-time');
     if (!timeDisplay) return;
     const now = new Date();
-    const options = { year: 'numeric', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+    const options = { 
+        year: 'numeric', month: 'numeric', day: 'numeric', 
+        hour: '2-digit', minute: '2-digit', second: '2-digit', 
+        hour12: true 
+    };
     timeDisplay.innerText = now.toLocaleString('zh-TW', options);
 }
-updateClock();
-setInterval(updateClock, 1000);
 
+// --- 2. 氣象圖表設定 ---
+function initWeatherCharts() {
+    if (!document.getElementById('temp-north')) return;
+    if (typeof Chart === 'undefined') return;
 
-let globalConfig = null;
+    const weekLabels = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
 
-/*async function loadConfig() {
-    try {
-        const response = await fetch('data/config.json');
-        globalConfig = await response.json();
-        // 將設定存入 session，讓其他 JS (如 login.js) 也能用到
-        sessionStorage.setItem('globalConfig', JSON.stringify(globalConfig));
-        console.log("Config 載入成功");
-    } catch (error) {
-        console.error("無法讀取 config.json:", error);
-    }
-}*/
-
-async function loadConfig() {
-    try {
-        const response = await fetch('data/config.json');
-        globalConfig = await response.json();
-        sessionStorage.setItem('globalConfig', JSON.stringify(globalConfig));
-
-        if (!response.ok) {
-            throw new Error('網路回應錯誤: ' + response.statusText);
-        }
-
-    } catch (error) {
-        console.error('讀取失敗：', error);
-    }
-}
-
-const cwa_setting = globalConfig.cwa_API_code[0];
-
-// --- CWA 資料設定 ---
-let CWA_API_KEY = cwa_setting.cwa_api_key; 
-let Hight_temp_key = cwa_setting.alert.Hight_temp;
-let earthquake_key = cwa_setting.alert.earthquake;
-
-// --- 告警系統 ---
-document.addEventListener('DOMContentLoaded', () => {
-    const alertContainer = document.getElementById('alert-container');
-    if (!alertContainer) return;
-
-    // 判斷是否為首頁
-    if (window.location.pathname.includes('index') || window.location.pathname.endsWith('/')) {
-        fetchCWAAlerts();
-        fetchEarthquake();
-    }
-});
-
-// 統一顯示告警函式
-function showAlertModal(alertData) {
-    const container = document.getElementById('alert-container');
-    if (!container) return;
-    
-    const modalHTML = `
-        <div class="modal-alert ${alertData.type}" id="modal-${alertData.id}">
-            <button class="alert-close-x" onclick="closeSpecificAlert('modal-${alertData.id}')">&times;</button>
-            <div class="alert-content">
-                <h2>${alertData.title}</h2>
-                <p>${alertData.msg}</p>
-            </div>
-            ${alertData.dailyMute ? `
-                <div class="alert-action-row">
-                    <button class="btn-mute-today" onclick="muteAlertToday('${alertData.id}', 'modal-${alertData.id}')">今日不再顯示</button>
-                </div>
-            ` : ''}
-        </div>
-    `;
-    container.insertAdjacentHTML('beforeend', modalHTML);
-}
-
-function closeSpecificAlert(modalId) {
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.remove(); // 簡化關閉邏輯
-    }
-}
-
-function muteAlertToday(alertId, modalId) {
-    localStorage.setItem(`mute_${alertId}`, new Date().toDateString());
-    closeSpecificAlert(modalId);
-}
-
-// 修正：確保變數範圍正確，並加入地區過濾
-async function fetchCWAAlerts() {
-    try {
-        const targetRegion = localStorage.getItem('user_region') || '臺北市';
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${Hight_temp_key}?Authorization=${CWA_API_KEY}`;
-        const resp = await fetch(url);
-        const data = await resp.json();
-        const records = data.records.record; 
-
-        // 過濾出與設定地區相關的警報
-        const filtered = records.filter(h => h.datasetDescription.includes(targetRegion));
-
-        filtered.forEach(h => {
-            const today = new Date().toDateString();
-            if (localStorage.getItem(`mute_${h.datasetNo}`) !== today) {
-                showAlertModal({
-                    id: h.datasetNo,
-                    type: 'warning',
-                    title: `📢 ${h.contents.content.headline}`,
-                    msg: h.contents.content.description,
-                    dailyMute: true
-                });
+    function createWeatherChart(id, label, data, color, type, fill = false) {
+        const ctx = document.getElementById(id);
+        if (!ctx) return;
+        new Chart(ctx, {
+            type: type,
+            data: {
+                labels: weekLabels,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    borderColor: color,
+                    backgroundColor: color + '33',
+                    fill: fill,
+                    tension: 0.4,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: false }, x: { grid: { display: false } } }
             }
         });
-    } catch (e) { console.error("警報抓取失敗", e); }
+    }
+
+    createWeatherChart('temp-north', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
+    createWeatherChart('rain-north', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#15b0f2', 'bar');
+    createWeatherChart('temp-central', '最高溫', [28, 29, 31, 33, 30, 29, 28], '#e74c3c', 'line');   
+    createWeatherChart('rain-central', '降雨機率', [0, 0, 5, 10, 0, 0, 0], '#3498db', 'bar');
+    createWeatherChart('temp-south', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
+    createWeatherChart('rain-south', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3498db', 'bar');
+    createWeatherChart('temp-east', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
+    createWeatherChart('rain-east', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3498db', 'bar');
 }
 
-async function fetchEarthquake() {
-    try {
-        const url = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/${earthquake_key}?Authorization=${CWA_API_KEY}`;
-        const resp = await fetch(url);
-        const data = await resp.json();
-        const eq = data.records.Earthquake[0]; 
-        
-        const eqTime = new Date(eq.EarthquakeInfo.OriginTime);
-        const now = new Date();
+// --- 3. 登入與安全邏輯 ---
+const MAX_FAILS = 5;
+const LOCK_TIME_MINS = 5;
 
-        // 30分鐘內的地震強制顯示
-        if ((now - eqTime) / 1000 / 60 < 30) {
-            showAlertModal({
-                id: eq.CTNo,
-                type: 'danger',
-                title: '⚠️ 最新地震告警',
-                msg: `震央：${eq.EarthquakeInfo.Epicenter.Location}，規模：${eq.EarthquakeInfo.EarthquakeMagnitude.MagnitudeValue}`,
-                dailyMute: false
+
+// --- 3. 核心功能：讀取 Config (登入關鍵) ---
+async function fetchConfig() {
+    try {
+        // 注意：請確保你的目錄下有 data/config.json 檔案
+        const response = await fetch('data/config.json');
+        if (!response.ok) throw new Error('檔案讀取失敗');
+        const data = await response.json();
+        sessionStorage.setItem('globalConfig', JSON.stringify(data));
+        return data;
+    } catch (error) {
+        console.error("無法讀取 config.json:", error);
+        // 備用方案：若 fetch 失敗，可在此填寫預設帳密供測試
+        return { admins: [{ username: "admin", password: "123", displayName: "管理員" }] };
+    }
+}
+
+// --- 4. 管理員頁面功能 ---
+window.saveRegionSettings = function() {
+    const selector = document.getElementById('region-selector');
+    if (selector) {
+        localStorage.setItem('user_region', selector.value);
+        alert(`地區已成功設定為：${selector.value}`);
+        location.reload(); 
+    }
+};
+
+window.logout = function() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    
+    // [時間更新]
+    const updateClock = () => {
+        const timeDisplay = document.getElementById('current-time');
+        if (timeDisplay) {
+            const now = new Date();
+            timeDisplay.innerText = now.toLocaleString('zh-TW', {
+                year: 'numeric', month: 'numeric', day: 'numeric', 
+                hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
             });
         }
-    } catch (e) { console.error("地震資料抓取失敗", e); }
-}
+    };
+    setInterval(updateClock, 1000);
+    updateClock();
 
-`
-<script src="main.js"></script>
-<script src="charts.js"></script>
-<script src="login.js"></script>
-<script src="admin.js"></script>
-`
+    // [啟動圖表]
+    initWeatherCharts();
+
+    // [LED 切換 - 首頁]
+    const led = document.getElementById('myLed');
+    if (led) {
+        led.onclick = () => led.classList.toggle('on');
+    }
+
+    // [登入頁面邏輯]
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        const passwordInput = document.getElementById('password'); 
+        const togglePassword = document.getElementById('togglePassword'); 
+
+        if (togglePassword && passwordInput) {
+            togglePassword.onclick = () => {
+                const isPass = passwordInput.type === 'password';
+                passwordInput.type = isPass ? 'text' : 'password';
+                togglePassword.innerText = isPass ? '🙈' : '👁️';
+            };
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); 
+            const msgDisplay = document.getElementById('login-msg');
+            const usernameInput = document.getElementById('username');
+
+            let config;
+            try {
+                const response = await fetch('data/config.json');
+                if (!response.ok) throw new Error();
+                config = await response.json();
+            } catch (err) {
+                // 備用帳密供測試
+                config = { admins: [{ username: "admin", password: "123", displayName: "管理員" }] };
+            }
+
+            // 修正比對邏輯中的變數名稱
+            const user = config.admins.find(u => 
+                u.username === usernameInput.value && 
+                String(u.password) === String(passwordInput.value)
+            );
+
+            if (user) {
+                sessionStorage.setItem('isAdmin', 'true');
+                sessionStorage.setItem('adminName', user.displayName);
+                window.location.href = 'admin.html';
+            } else {
+                if (msgDisplay) {
+                    msgDisplay.innerText = "帳號或密碼錯誤！";
+                    msgDisplay.className = "error";
+                }
+            }
+        });
+    }
+
+    // [管理頁面初始化與安全檢查]
+    if (window.location.pathname.includes('admin.html')) {
+        if (sessionStorage.getItem('isAdmin') !== 'true') {
+            window.location.href = 'login.html';
+        } else {
+            const adminName = sessionStorage.getItem('adminName') || '管理員';
+            const welcomeMsg = document.getElementById('admin-welcome');
+            if (welcomeMsg) welcomeMsg.innerText = `歡迎回來，${adminName}`;
+
+            const selector = document.getElementById('region-selector');
+            if (selector) {
+                selector.value = localStorage.getItem('user_region') || '臺北市';
+            }
+        }
+    }
+});
