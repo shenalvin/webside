@@ -59,10 +59,10 @@ function initWeatherCharts() {
 }
 
 // --- 3. 登入與安全邏輯 ---
-let currentCaptcha = "";
+//let currentCaptcha = "";
 const MAX_FAILS = 5;
 const LOCK_TIME_MINS = 5;
-
+/*
 function generateCaptcha() {
     const display = document.getElementById('captcha-code');
     const input = document.getElementById('captcha-input');
@@ -76,7 +76,7 @@ function generateCaptcha() {
     currentCaptcha = code;
     display.innerText = code;
     if (input) input.value = "";
-}
+}*/
 
 async function fetchConfig() {
     try {
@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         loginForm.onsubmit = async (e) => {
             e.preventDefault();
             const msgDisplay = document.getElementById('login-msg');
-            const captchaInput = document.getElementById('captcha-input');
+            // const captchaInput = document.getElementById('captcha-input');
             const usernameInput = document.getElementById('username');
 
             // 驗證碼檢查
