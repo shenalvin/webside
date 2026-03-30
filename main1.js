@@ -78,15 +78,19 @@ function generateCaptcha() {
     if (input) input.value = "";
 }*/
 
+// --- 3. 核心功能：讀取 Config (登入關鍵) ---
 async function fetchConfig() {
     try {
+        // 注意：請確保你的目錄下有 data/config.json 檔案
         const response = await fetch('data/config.json');
+        if (!response.ok) throw new Error('檔案讀取失敗');
         const data = await response.json();
         sessionStorage.setItem('globalConfig', JSON.stringify(data));
         return data;
     } catch (error) {
         console.error("無法讀取 config.json:", error);
-        return null;
+        // 備用方案：若 fetch 失敗，可在此填寫預設帳密供測試
+        return { admins: [{ username: "admin", password: "123", displayName: "管理員" }] };
     }
 }
 
