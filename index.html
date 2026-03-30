@@ -59,6 +59,26 @@
 
 
         <h2>電源狀態</h2>
+        <div class="card-grid" style="margin-top: 20px;">
+            <div class="info-card status-card status-danger">
+                <h3>太陽能</h3>
+                <p class="value">ON</p>
+                <p class="desc">狀態：運行中</p>
+            </div>
+            <div class="info-card status-card status-success">
+                <h3>台電(市電)</h3>
+                <p class="value">OFF</p>
+                <p class="desc">狀態：停止</p>
+            </div>
+
+            <div class="info-card">
+                <h3>控制器電源來源</h3>
+                <p class="value">太陽能</p>
+                <p class="desc">狀態：太陽能供電</p>
+            </div>
+        </div>
+
+
         <div class="led" id="myLed" onclick="toggleLed()"></div>
 
     </main>

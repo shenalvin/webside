@@ -108,7 +108,10 @@ main { padding: 20px; max-width: 1200px; margin: 0 auto; }
     transition: var(--transition);
 }
 
-.info-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.15); }
+.info-card:hover { 
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15); 
+}
 
 /* --- 緊急告警對話框 (堆疊式) --- */
 #alert-container {

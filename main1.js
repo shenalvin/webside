@@ -1,8 +1,3 @@
-/**
- * What the Farm - 整合型主程式
- * 包含：時間更新、圖表渲染、登入驗證、管理員功能
- */
-
 // --- 1. 即時時間更新 ---
 function updateClock() {
     const timeDisplay = document.getElementById('current-time');
