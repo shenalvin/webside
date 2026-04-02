@@ -119,6 +119,21 @@
                 </div>
             </div>
         </section>
+        
+        <div class="device-control-grid">
+            <div class="device-card" id="card-fan">
+                <h3>風扇系統 (恆溫模式)</h3>
+                <div class="led-indicator" id="led-fan"></div>
+                <div style="margin: 10px 0;">
+                    目標溫度：<input type="number" id="fan-temp-limit" value="28" style="width:50px;">°C
+                </div>
+                <div style="margin: 10px 0;">
+                    週期：<select id="fan-mode"><option value="daily">每天</option><option value="weekly">每周</option></select>
+                    <input type="time" id="fan-timer">
+                </div>
+                <button class="btn-remote" onclick="toggleDevice('fan')">手動切換</button>
+            </div>
+        </div>
     </main>
 
     <script src="main.js"></script>

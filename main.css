@@ -278,19 +278,25 @@ body {
     color: white !important; 
 }
 
-.status-card { 
-    color: white; 
-    border: none; 
+.status-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
 }
-.status-card h3 { 
-    opacity: 0.8; 
-    font-size: 1rem; 
-    margin-bottom: 10px; 
+.status-card h3 {
+    text-align: center;
+    font-size: 1.4rem; /* 標題加大並致中 */
+    margin-bottom: 15px;
 }
-.status-card .value { 
-    font-size: 2.5rem; 
-    font-weight: bold; 
+
+.status-card .value {
+    font-size: 3.5rem; /* 數值加大 */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
+
 .status-card .desc {
     font-size: 0.9rem; 
     opacity: 0.9; 
@@ -364,18 +370,6 @@ body {
     cursor:pointer;
 }
 
-/* 強化重要數據顯示 */
-.status-card h3 {
-    text-align: center;
-    font-size: 1.4rem; /* 標題加大並致中 */
-    margin-bottom: 15px;
-}
-
-.status-card .value {
-    font-size: 3.5rem; /* 數值加大 */
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
 
 /* 虛擬 LED 美化 */
 .led-indicator {
@@ -390,3 +384,19 @@ body {
     background: #27ae60;
     box-shadow: 0 0 15px #27ae60;
 }
+
+/* 遙控器按鈕樣式 */
+
+.btn-remote {
+    width: 100%;
+    padding: 15px;
+    border-radius: 50px;
+    border: none;
+    background: #2c3e50;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.btn-remote:active { transform: scale(0.95); }
