@@ -14,7 +14,7 @@ function updateClock() {
     const mins = String(now.getMinutes()).padStart(2, '0');
     const secs = String(now.getSeconds()).padStart(2, '0');
 
-    timeDisplay.innerText = `${yyyy}/${mm}/${dd} ${ap} ${displayHour}:${mins}:${secs}`;
+    timeDisplay.innerText = `${yyyy}/${mm}/${dd} \n ${ap} ${displayHour}:${mins}:${secs}`;
 }
 
 // --- 模組：資料顯示初始化 ---
@@ -121,92 +121,79 @@ function updateDataDisplay(dataObj) {
     }
 }
 
-// --- 模組：設備定時與開關 ---
-let deviceTimers = {};
-
-function toggleDevice(dev) {
-    const currentState = localStorage.getItem(`dev_${dev}`) === 'on';
-    const newState = currentState ? 'off' : 'on';
-    localStorage.setItem(`dev_${dev}`, newState);
-    refreshDeviceUI();
-}
-
-function setDeviceTimer(dev, timeValue) {
-    if (!timeValue) return;
-    localStorage.setItem(`timer_${dev}`, timeValue);
-    alert(`${dev} 已設定於 ${timeValue} 自動啟動`);
-    refreshDeviceUI();
-}
-
-function refreshDeviceUI() {
-    const devices = ['power', 'fan', 'sprinkler', 'motor'];
-    devices.forEach(dev => {
-        const state = localStorage.getItem(`dev_${dev}`) === 'on';
-        const timer = localStorage.getItem(`timer_${dev}`);
-        
-        const led = document.getElementById(`led-${dev}`);
-        const timerLabel = document.getElementById(`timer-display-${dev}`);
-        
-        if (led) led.className = `led-indicator ${state ? 'on' : 'off'}`;
-        if (timerLabel) timerLabel.innerText = timer ? `定時：${timer}` : '定時：未設定';
+function resetDataDisplay() {
+    document.querySelectorAll('.info-card.status-card').forEach(card => {
+        const valEl = card.querySelector('.value');
+        const descEl = card.querySelector('.desc');
+        if (valEl) valEl.innerText = '--';
+        if (descEl) descEl.innerText = '狀態：載入中...';
+        // 移除異常顏色類別，回歸預設美觀樣式
+        card.classList.remove('status-danger', 'status-success');
+        card.classList.add('status-normal');
     });
 }
 
-// 檢查定時任務 (每分鐘執行一次)
+// --- 模組：設備定時與開關 ---
+// --- 模組 3：自動化與週期定時邏輯 ---
+function checkAutomatedSystems(currentTemp) {
+    const target = parseFloat(document.getElementById('fan-target-temp')?.value || 28);
+    // 類似冷氣設定：超過設定溫度啟動，低於則停止
+    if (currentTemp >= target) {
+        setDeviceStatus('fan', 'on');
+    } else {
+        setDeviceStatus('fan', 'off');
+    }
+}
+
+// 週期定時器檢查 (每一分鐘檢查一次)
 setInterval(() => {
     const now = new Date();
     const currentTime = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-    
-    ['power', 'fan', 'sprinkler', 'motor'].forEach(dev => {
-        const targetTime = localStorage.getItem(`timer_${dev}`);
-        if (targetTime === currentTime) {
-            localStorage.setItem(`dev_${dev}`, 'on'); // 時間到，強制開啟
-            refreshDeviceUI();
+    const currentDay = now.getDay(); // 0 是週日
+
+    ['fan', 'sprinkler'].forEach(dev => {
+        const setTime = document.getElementById(`${dev}-timer-time`)?.value;
+        const setType = document.getElementById(`${dev}-timer-type`)?.value;
+
+        if (setTime === currentTime) {
+            if (setType === 'daily' || (setType === 'weekly' && currentDay === 1)) { // 範例：每周一
+                setDeviceStatus(dev, 'on');
+            }
         }
     });
 }, 60000);
 
-// --- 2. 氣象圖表設定 ---
-function initWeatherCharts() {
-    if (!document.getElementById('temp-north')) return;
-    if (typeof Chart === 'undefined') return;
 
-    const weekLabels = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
+// --- 模組 2：美化版氣象趨勢圖 ---
+function initAdvancedWeatherChart(id, dataHigh, dataLow, dataRain) {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
 
-    function createWeatherChart(id, label, data, color, type, fill = false) {
-        const ctx = document.getElementById(id);
-        if (!ctx) return;
-        new Chart(ctx, {
-            type: type,
-            data: {
-                labels: weekLabels,
-                datasets: [{
-                    label: label,
-                    data: data,
-                    borderColor: color,
-                    backgroundColor: color + '33',
-                    fill: fill,
-                    tension: 0.4,
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { y: { beginAtZero: false }, x: { grid: { display: false } } }
+    // 生成未來 7 天日期標籤
+    const labels = Array.from({length: 7}, (_, i) => {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
+    });
+
+    new Chart(ctx, {
+        data: {
+            labels: labels,
+            datasets: [
+                { type: 'line', label: '最高溫', data: dataHigh, borderColor: '#e74c3c', yAxisID: 'yTemp' },
+                { type: 'line', label: '最低溫', data: dataLow, borderColor: '#3498db', yAxisID: 'yTemp' },
+                { type: 'bar', label: '降雨機率', data: dataRain, backgroundColor: 'rgba(52, 152, 219, 0.2)', yAxisID: 'yRain' }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                yTemp: { type: 'linear', position: 'left', title: { display: true, text: '溫度 (°C)' } },
+                yRain: { type: 'linear', position: 'right', max: 100, title: { display: true, text: '降雨 (%)' } }
             }
-        });
-    }
-
-    createWeatherChart('temp-north', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
-    createWeatherChart('rain-north', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#15b0f2', 'bar');
-    createWeatherChart('temp-central', '最高溫', [28, 29, 31, 33, 30, 29, 28], '#e74c3c', 'line');   
-    createWeatherChart('rain-central', '降雨機率', [0, 0, 5, 10, 0, 0, 0], '#3498db', 'bar');
-    createWeatherChart('temp-south', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
-    createWeatherChart('rain-south', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3498db', 'bar');
-    createWeatherChart('temp-east', '最高溫', [25, 27, 26, 30, 28, 26, 25], '#e74c3c', 'line');
-    createWeatherChart('rain-east', '降雨機率', [10, 20, 80, 40, 10, 5, 0], '#3498db', 'bar');
+        }
+    });
 }
 
 // --- 3. 登入與安全邏輯 ---

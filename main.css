@@ -353,3 +353,40 @@ body {
     margin-top: 5px;
     font-weight: bold;
 }
+
+.btn-admin-setting{
+    background:#1a252f; 
+    color:white; 
+    border:none; 
+    padding:8px 20px; 
+    border-radius:20px; 
+    margin-left:10px; 
+    cursor:pointer;
+}
+
+/* 強化重要數據顯示 */
+.status-card h3 {
+    text-align: center;
+    font-size: 1.4rem; /* 標題加大並致中 */
+    margin-bottom: 15px;
+}
+
+.status-card .value {
+    font-size: 3.5rem; /* 數值加大 */
+    color: #ffffff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+/* 虛擬 LED 美化 */
+.led-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin: 10px auto;
+    background: #555;
+    transition: 0.3s;
+}
+.led-indicator.active {
+    background: #27ae60;
+    box-shadow: 0 0 15px #27ae60;
+}

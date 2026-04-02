@@ -79,7 +79,7 @@
                     <option value="金門縣">金門縣</option>
                     <option value="連江縣">連江縣</option>
                     </select>
-                <button onclick="saveRegionSettings()" style="background:#1a252f; color:white; border:none; padding:8px 20px; border-radius:20px; margin-left:10px; cursor:pointer;">儲存設定</button>
+                <button onclick="saveRegionSettings()" class="btn-admin-setting">儲存設定</button>
             </div>
         </section>
         
@@ -90,7 +90,7 @@
                     <div class="led-indicator" id="led-power"></div>
                     <h3>電源系統</h3>
                     <p class="timer-tag" id="timer-display-power">定時：未設定</p>
-                    <button class="btn-login" onclick="toggleDevice('power')">切換開關</button>
+                    <button class="btn-admin-setting" onclick="toggleDevice('power')">切換開關</button>
                     <input type="time" onchange="setDeviceTimer('power', this.value)" style="margin-top:10px; width:80%;">
                 </div>
 
@@ -98,7 +98,7 @@
                     <div class="led-indicator" id="led-fan"></div>
                     <h3>風扇系統</h3>
                     <p class="timer-tag" id="timer-display-fan">定時：未設定</p>
-                    <button class="btn-login" onclick="toggleDevice('fan')">切換開關</button>
+                    <button class="btn-admin-setting" onclick="toggleDevice('fan')">切換開關</button>
                     <input type="time" onchange="setDeviceTimer('fan', this.value)" style="margin-top:10px; width:80%;">
                 </div>
 
@@ -106,7 +106,7 @@
                     <div class="led-indicator" id="led-sprinkler"></div>
                     <h3>灑水裝置</h3>
                     <p class="timer-tag" id="timer-display-sprinkler">定時：未設定</p>
-                    <button class="btn-login" onclick="toggleDevice('sprinkler')">切換開關</button>
+                    <button class="btn-admin-setting" onclick="toggleDevice('sprinkler')">切換開關</button>
                     <input type="time" onchange="setDeviceTimer('sprinkler', this.value)" style="margin-top:10px; width:80%;">
                 </div>
 
@@ -114,7 +114,7 @@
                     <div class="led-indicator" id="led-motor"></div>
                     <h3>馬達幫浦</h3>
                     <p class="timer-tag" id="timer-display-motor">定時：未設定</p>
-                    <button class="btn-login" onclick="toggleDevice('motor')">切換開關</button>
+                    <button class="btn-admin-setting" onclick="toggleDevice('motor')">切換開關</button>
                     <input type="time" onchange="setDeviceTimer('motor', this.value)" style="margin-top:10px; width:80%;">
                 </div>
             </div>
