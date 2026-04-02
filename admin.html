@@ -98,6 +98,18 @@
         </div>
 
         <!--設計定時灑水、排風(開關)-->
+        <div class="card-grid">
+            <div class="info-card">
+                <h3>電源系統 (日/夜間)</h3>
+                <div class="led" id="led-power"></div>
+                <button onclick="toggleDevice('power')" id="btn-power">啟動</button>
+            </div>
+            <div class="info-card">
+                <h3>風扇系統 (排風)</h3>
+                <div class="led" id="led-fan"></div>
+                <button onclick="toggleDevice('fan')" id="btn-fan">啟動</button>
+            </div>
+        </div>
     </main>
 
     <script src="main.js"></script>

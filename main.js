@@ -3,13 +3,92 @@ function updateClock() {
     const timeDisplay = document.getElementById('current-time');
     if (!timeDisplay) return;
     const now = new Date();
-    const options = { 
-        year: 'numeric', month: 'numeric', day: 'numeric', 
-        hour: '2-digit', minute: '2-digit', second: '2-digit', 
-        hour12: true 
-    };
-    timeDisplay.innerText = now.toLocaleString('zh-TW', options);
+    
+    const yyyy = now.getFullYear();
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    const dd = String(now.getDate()).padStart(2, '0');
+    
+    const hour = now.getHours();
+    const ap = hour < 12 ? '上午' : '下午';
+    const displayHour = String(hour % 12 || 12).padStart(2, '0');
+    const mins = String(now.getMinutes()).padStart(2, '0');
+    const secs = String(now.getSeconds()).padStart(2, '0');
+
+    timeDisplay.innerText = `${yyyy}/${mm}/${dd} ${ap} ${displayHour}:${mins}:${secs}`;
 }
+
+// --- 模組：資料顯示初始化 ---
+function initDataDisplay() {
+    const region = localStorage.getItem('user_region') || '臺北市';
+    
+    // 更新所有標題中的地區名稱
+    document.querySelectorAll('.region-name-display').forEach(el => {
+        el.innerText = `(${region})`;
+    });
+
+    // 將所有即時數值設為 --
+    document.querySelectorAll('.value').forEach(el => {
+        if (!el.closest('.status-card')) return; // 跳過控制面板的數值
+        el.innerText = '--';
+    });
+}
+
+// --- 模組：進階氣象圖表 ---
+function initAdvancedCharts() {
+    if (!document.getElementById('temp-north')) return;
+
+    // 生成未來 7 天日期 (yyyy/mm/dd)
+    const dateLabels = [];
+    for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() + i);
+        dateLabels.push(`${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`);
+    }
+
+    const chartConfig = (id, tempDataHigh, tempDataLow, rainData) => {
+        const ctx = document.getElementById(id);
+        if (!ctx) return;
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dateLabels,
+                datasets: [
+                    { label: '最高溫', data: tempDataHigh, borderColor: '#e74c3c', yAxisID: 'y' },
+                    { label: '最低溫', data: tempDataLow, borderColor: '#3498db', yAxisID: 'y' },
+                    { label: '降雨機率', data: rainData, backgroundColor: 'rgba(21, 176, 242, 0.2)', fill: true, type: 'bar', yAxisID: 'y1' }
+                ]
+            },
+            options: {
+                scales: {
+                    y: { type: 'linear', position: 'left', title: { display: true, text: '溫度 (°C)' } },
+                    y1: { type: 'linear', position: 'right', title: { display: true, text: '降雨 (%)' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
+    };
+
+    // 範例呼叫 (數據可改為從 localStorage 讀取之地區對應數值)
+    chartConfig('temp-north', [28, 30, 29, 32, 31, 28, 27], [22, 23, 22, 24, 23, 21, 20], [10, 20, 50, 30, 10, 0, 5]);
+}
+
+// --- 模組：設備控制中心 ---
+const devices = ['power', 'fan', 'sprinkler', 'motor'];
+
+function updateDeviceUI() {
+    devices.forEach(dev => {
+        const status = localStorage.getItem(`dev_${dev}`) === 'on';
+        const led = document.getElementById(`led-${dev}`);
+        const btn = document.getElementById(`btn-${dev}`);
+        if (led) led.className = status ? 'led on' : 'led';
+        if (btn) btn.innerText = status ? '關閉' : '啟動';
+    });
+}
+
+window.toggleDevice = function(devName) {
+    const current = localStorage.getItem(`dev_${devName}`) === 'on';
+    localStorage.setItem(`dev_${devName}`, current ? 'off' : 'on');
+    updateDeviceUI();
+};
 
 // --- 2. 氣象圖表設定 ---
 function initWeatherCharts() {
@@ -92,6 +171,12 @@ window.logout = function() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     
+    updateClock();
+    setInterval(updateClock, 1000);
+    initDataDisplay();
+    initAdvancedCharts();
+    if (document.getElementById('admin-welcome')) updateDeviceUI();
+    /*
     // [時間更新]
     const updateClock = () => {
         const timeDisplay = document.getElementById('current-time');
@@ -114,7 +199,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (led) {
         led.onclick = () => led.classList.toggle('on');
     }
-
+    */
     // [登入頁面邏輯]
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
